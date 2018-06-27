@@ -2,6 +2,7 @@ package com.wordweather.android;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -83,6 +83,7 @@ public class ChooseAreaFragment extends Fragment{
 
     /**
      * 当前选中的级别
+     *
      */
     private int currentLevel;
 
@@ -111,6 +112,12 @@ public class ChooseAreaFragment extends Fragment{
                 }else if (currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY){
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -118,7 +125,7 @@ public class ChooseAreaFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 if (currentLevel == LEVEL_COUNTY){
-                    queryProvinces();
+                    queryCities();
                 }else if (currentLevel == LEVEL_CITY){
                     queryProvinces();
                 }
@@ -165,7 +172,7 @@ public class ChooseAreaFragment extends Fragment{
             currentLevel = LEVEL_CITY;
         }else {
             int provinceCode = selectedProvince.getProvinceCode();
-            String address = "http://guolin.tech/api/china" + provinceCode;
+            String address = "http://guolin.tech/api/china/" + provinceCode;
             queryFromServer(address,"city");
         }
 
@@ -191,7 +198,7 @@ public class ChooseAreaFragment extends Fragment{
         }else{
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = "http://guolin.tech/api/china" + provinceCode + "/" +cityCode;
+            String address = "http://guolin.tech/api/china/" + provinceCode + "/" +cityCode;
             queryFromServer(address,"county");
         }
     }
@@ -224,7 +231,7 @@ public class ChooseAreaFragment extends Fragment{
                         public void run() {
                             closeProgressDialog();
                             if ("province".equals(type)){
-                                queryCities();
+                                queryProvinces();
                             }else if ("city".equals(type)){
                                 queryCities();
                             }else if ("county".equals(type)){

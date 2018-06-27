@@ -6,6 +6,8 @@ import org.litepal.crud.DataSupport;
  * Created by:
  */
 public class County extends DataSupport {
+
+
     private int id;
 
     private String countyName;
@@ -45,4 +47,5 @@ public class County extends DataSupport {
     public void setCityId(int cityId) {
         this.cityId = cityId;
     }
+
 }
